@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Station 2: Async Interval</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      :root {
+        --bg-dark: #121212;
+        --bg-light: #1e1e1e;
+        --text-main: #e0e0e0;
+        --text-dim: #a0a0a0;
+        --accent: #646cff;
+        --border: #333;
+      }
+
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        overflow: hidden;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        height: 100vh;
+      }
+
+      #readme-panel {
+        background-color: var(--bg-light);
+        border-right: 1px solid var(--border);
+        padding: 2rem;
+        overflow-y: auto;
+        line-height: 1.6;
+      }
+
+      #readme-panel h1, #readme-panel h2, #readme-panel h3 {
+        color: var(--accent);
+      }
+
+      #readme-panel code {
+        background: #2d2d2d;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      #readme-panel pre {
+        background: #2d2d2d;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+
+      #exercise-panel {
+        padding: 2rem;
+        overflow-y: auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      #root {
+        width: 100%;
+        max-width: 800px;
+        background: var(--bg-light);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+      }
+
+      /* Scrollbar Styling */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: var(--bg-dark); }
+      ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #444; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside id="readme-panel">
+        <div id="readme-content">Loading instructions...</div>
+      </aside>
+      <main id="exercise-panel">
+        <div id="root"></div>
+      </main>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      async function loadReadme() {
+        try {
+          const response = await fetch('/README.md');
+          const text = await response.text();
+          document.getElementById('readme-content').innerHTML = marked.parse(text);
+        } catch (err) {
+          document.getElementById('readme-content').innerHTML = 'Error loading README.md';
+        }
+      }
+      loadReadme();
+    </script>
+  </body>
+</html>

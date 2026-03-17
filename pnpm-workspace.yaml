@@ -1,0 +1,4 @@
+packages:
+  - 'stations/*'
+ignoredBuiltDependencies:
+  - esbuild
