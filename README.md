@@ -1,4 +1,7 @@
-# 🏋️‍♂️ React Workout: The Fitness Park
+# 🏋️‍♂️ React Workout: The Fitness Park 🏋️‍♀️
+*A high-intensity circuit training ground for React & React Native developers.*
+
+---
 
 Welcome to the **React Workout Circuit**! This repository is designed to sharpen your React and React Native muscles through high-intensity, focused "Stations."
 

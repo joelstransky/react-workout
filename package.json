@@ -6,19 +6,31 @@
   ],
   "scripts": {
     "test": "vitest",
-    "dev": "pnpm -r dev"
+    "test:watch": "vitest --reporter=default --reporter=./dashboard-reporter.ts",
+    "dev:dashboard": "vite",
+    "dev": "concurrently \"pnpm dev:dashboard\" \"pnpm test:watch\""
   },
   "devDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "@types/three": "^0.183.1",
     "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^9.2.1",
     "jsdom": "^24.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "^5.2.2",
     "vite": "^5.1.0",
     "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.577.0",
+    "react-markdown": "^10.1.0",
+    "three": "^0.183.2"
   }
 }
