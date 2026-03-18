@@ -80,9 +80,34 @@
       ::-webkit-scrollbar-track { background: var(--bg-dark); }
       ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
       ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+      .container { transition: grid-template-columns 0.3s ease; }
+      .collapsed { grid-template-columns: 0px 1fr; }
+      #readme-panel { transition: padding 0.3s ease, border 0.3s ease; }
+      .collapsed #readme-panel { padding: 0; border: none; }
+      
+      #toggle-btn {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
   </head>
   <body>
+    <button id="toggle-btn" onclick="document.querySelector('.container').classList.toggle('collapsed')">📖</button>
     <div class="container">
       <aside id="readme-panel">
         <div id="readme-content">Loading instructions...</div>
