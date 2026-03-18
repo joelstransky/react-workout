@@ -42,3 +42,7 @@ blob-report/
 # Misc
 *.tsbuildinfo
 .cache/
+
+# Expo / React Native
+.expo/
+web-build/
