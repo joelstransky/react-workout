@@ -8,11 +8,18 @@ export default class DashboardReporter implements Reporter {
 
     const results = files.reduce((acc, file) => {
       // Find which station this file belongs to
-      const match = file.filepath.match(/stations[\\/]([^/\\]+)/);
-      const station = match ? match[1] : 'unknown';
+      const stationMatch = file.filepath.match(/stations[\\/]([^/\\]+)/);
+      const station = stationMatch ? stationMatch[1] : 'unknown';
+
+      // Find which level this file belongs to (e.g. Level1.test.tsx -> Level1)
+      const levelMatch = file.filepath.match(/Level(\d+)\.test\.tsx/i);
+      const level = levelMatch ? `Level${levelMatch[1]}` : 'General';
 
       if (!acc[station]) {
-        acc[station] = {
+        acc[station] = {};
+      }
+      if (!acc[station][level]) {
+        acc[station][level] = {
           passed: 0,
           failed: 0,
           total: 0,
@@ -22,9 +29,9 @@ export default class DashboardReporter implements Reporter {
       const countTasks = (tasks: any[]) => {
         for (const task of tasks) {
           if (task.type === 'test') {
-            acc[station].total++;
-            if (task.result?.state === 'pass') acc[station].passed++;
-            if (task.result?.state === 'fail') acc[station].failed++;
+            acc[station][level].total++;
+            if (task.result?.state === 'pass') acc[station][level].passed++;
+            if (task.result?.state === 'fail') acc[station][level].failed++;
           } else if (task.tasks) {
             countTasks(task.tasks);
           }
@@ -33,7 +40,7 @@ export default class DashboardReporter implements Reporter {
 
       countTasks(file.tasks);
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, Record<string, any>>);
 
     const outputPath = path.resolve(process.cwd(), 'public', 'test-results.json');
     if (!fs.existsSync(path.dirname(outputPath))) {

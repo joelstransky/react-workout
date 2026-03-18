@@ -8,12 +8,19 @@ import readmeContent from '../README.md?raw';
 // -------------------------------------------------------------
 // UI Types & Fetching
 // -------------------------------------------------------------
-type StationResult = {
+type LevelResult = {
   passed: number;
   failed: number;
   total: number;
 };
+type StationResult = Record<string, LevelResult>;
 type TestResults = Record<string, StationResult>;
+
+const MEDALS = [
+  { key: 'Level1', icon: '🥉', name: 'Bronze' },
+  { key: 'Level2', icon: '🥈', name: 'Silver' },
+  { key: 'Level3', icon: '🥇', name: 'Gold' },
+];
 
 const STATIONS = [
   { id: '01-filter-sprint', name: 'Filter Sprint', color: '#FF6B6B', position: [-8, 0, -4] as [number, number, number] },
@@ -46,14 +53,14 @@ function TitleScreenModal({ onClose }: { onClose: () => void }) {
         color: '#dfe6e9',
         borderRadius: '0px',
         padding: '30px',
-        width: '80vmin', /* Use viewport min to enforce a max size that stays square-ish */
+        width: '80vmin', 
         maxWidth: '600px',
         height: '80vmin',
         maxHeight: '600px',
         overflowY: 'auto',
-        boxShadow: '10px 10px 0px rgba(0, 0, 0, 0.5)', /* Solid drop shadow for 8-bit feel */
+        boxShadow: '10px 10px 0px rgba(0, 0, 0, 0.5)',
         position: 'relative',
-        border: '6px solid #55efc4' /* Thick border */
+        border: '6px solid #55efc4'
       }}>
         <button 
           onClick={onClose}
@@ -76,7 +83,6 @@ function TitleScreenModal({ onClose }: { onClose: () => void }) {
           <X size={20} strokeWidth={3} />
         </button>
         
-        {/* Markdown Styling wrapper - reduced font scale by ~15% */}
         <div style={{ lineHeight: '1.4', fontSize: '13.6px' }}>
           <ReactMarkdown
             components={{
@@ -133,11 +139,10 @@ function AthleticTracker({ results, onSelectStation, selectedStationId }: { resu
 
   return (
     <div style={{ height: '100%', overflowY: 'auto', padding: '20px', boxSizing: 'border-box', backgroundColor: '#2d3436' }}>
-      <h1 style={{ margin: '0 0 20px 0', textAlign: 'center', color: '#fff' }}>🏃‍♂️ React Workout Tracker</h1>
+      <h1 style={{ margin: '0 0 20px 0', textAlign: 'center', color: '#fff', fontFamily: '"Courier New", Courier, monospace', textTransform: 'uppercase' }}>🏃‍♂️ React Workout Tracker</h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
         {STATIONS.map((station) => {
-          const res = results?.[station.id] || { passed: 0, failed: 0, total: 0 };
-          const progress = res.total > 0 ? Math.round((res.passed / res.total) * 100) : 0;
+          const stationRes = results?.[station.id] || {};
           const isSelected = selectedStationId === station.id;
 
           return (
@@ -147,26 +152,42 @@ function AthleticTracker({ results, onSelectStation, selectedStationId }: { resu
               style={{
                 backgroundColor: '#dfe6e9',
                 color: '#2d3436',
-                borderRadius: '12px',
+                borderRadius: '0px',
                 padding: '16px',
                 cursor: 'pointer',
-                border: `4px solid ${isSelected ? station.color : 'transparent'}`,
-                transform: isSelected ? 'scale(1.05)' : 'scale(1)',
-                transition: 'all 0.2s ease-in-out'
+                border: `6px solid ${isSelected ? station.color : '#636e72'}`,
+                transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                transition: 'all 0.2s ease-in-out',
+                fontFamily: '"Courier New", Courier, monospace',
+                boxShadow: '8px 8px 0px rgba(0,0,0,0.5)'
               }}
             >
-              <h3 style={{ margin: '0 0 10px 0' }}>{station.name}</h3>
-              <div style={{ backgroundColor: '#b2bec3', height: '12px', borderRadius: '6px', overflow: 'hidden' }}>
-                <div style={{ 
-                  backgroundColor: progress === 100 ? '#00b894' : station.color, 
-                  height: '100%', 
-                  width: `${progress}%`,
-                  transition: 'width 0.5s ease-in-out'
-                }} />
+              <h3 style={{ margin: '0 0 15px 0', textTransform: 'uppercase', fontSize: '18px' }}>{station.name}</h3>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', backgroundColor: '#b2bec3', padding: '10px', border: '4px solid #2d3436' }}>
+                {MEDALS.map(medal => {
+                  const levelRes = stationRes[medal.key];
+                  const isEarned = levelRes && levelRes.total > 0 && levelRes.passed === levelRes.total;
+                  
+                  return (
+                    <div 
+                      key={medal.key} 
+                      title={medal.name}
+                      style={{ 
+                        fontSize: '32px', 
+                        filter: isEarned ? 'none' : 'grayscale(100%) brightness(50%)',
+                        opacity: isEarned ? 1 : 0.2,
+                        transition: 'all 0.5s ease'
+                      }}
+                    >
+                      {medal.icon}
+                    </div>
+                  );
+                })}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '14px', fontWeight: 'bold' }}>
-                <span>{progress}%</span>
-                <span>{res.passed} / {res.total} Passed</span>
+              
+              <div style={{ marginTop: '10px', fontSize: '12px', textAlign: 'center', fontWeight: 'bold' }}>
+                STATION {STATIONS.indexOf(station) + 1}
               </div>
             </div>
           );
@@ -180,43 +201,45 @@ function AthleticTracker({ results, onSelectStation, selectedStationId }: { resu
 // 3D Scene Components
 // -------------------------------------------------------------
 function ParkStation({ station, results, isSelected, onClick }: { station: typeof STATIONS[0], results: StationResult | undefined, isSelected: boolean, onClick: () => void }) {
-  const isComplete = results && results.total > 0 && results.passed === results.total;
-  const isStarted = results && results.passed > 0 && !isComplete;
+  // Aggregate results for the 3D model transformation
+  let passedCount = 0;
+  let totalCount = 0;
+  if (results) {
+    Object.values(results).forEach(lvl => {
+      passedCount += lvl.passed;
+      totalCount += lvl.total;
+    });
+  }
+  const isComplete = totalCount > 0 && passedCount === totalCount;
+  const isStarted = passedCount > 0 && !isComplete;
 
   let baseColor = station.color;
   if (isComplete) baseColor = '#00b894';
   
-  // Animate selection hover
   const scale = isSelected ? 1.2 : 1;
 
   return (
     <group position={station.position} onClick={(e) => { e.stopPropagation(); onClick(); }} scale={scale}>
-      {/* Platform - Chunky Base */}
       <Cylinder args={[2.5, 3, 1, 8]} position={[0, -0.5, 0]}>
         <meshToonMaterial color={isSelected ? '#fff' : '#636e72'} />
       </Cylinder>
       
-      {/* Central Object - Varies by completion status to make it more dynamic */}
       <group position={[0, 1.5, 0]}>
         {isComplete ? (
-          // Completed: Big bouncing star/diamond shape
           <Sphere args={[1.5, 8, 8]} scale={[1, 1.5, 1]}>
              <meshToonMaterial color={baseColor} />
           </Sphere>
         ) : isStarted ? (
-          // In Progress: Cylinder
            <Cylinder args={[1.5, 1.5, 2.5, 6]}>
              <meshToonMaterial color={baseColor} />
            </Cylinder>
         ) : (
-          // Not Started: Chunky Box
           <Box args={[2, 2.5, 2]}>
             <meshToonMaterial color={baseColor} />
           </Box>
         )}
       </group>
       
-      {/* Floating indicator for selection */}
       {isSelected && (
         <Box args={[0.8, 0.8, 0.8]} position={[0, 4, 0]} rotation={[Math.PI / 4, Math.PI / 4, 0]}>
           <meshToonMaterial color="#ffeaa7" />
@@ -233,12 +256,10 @@ function Scene({ results, selectedStationId, onSelectStation }: { results: TestR
     if (selectedStationId && cameraControlsRef.current) {
       const station = STATIONS.find(s => s.id === selectedStationId);
       if (station) {
-        // Fly to a closer, more dramatic angle
         const [sx, sy, sz] = station.position;
         cameraControlsRef.current.setLookAt(sx + 8, sy + 10, sz + 12, sx, sy + 2, sz, true);
       }
     } else if (cameraControlsRef.current) {
-      // Overview
       cameraControlsRef.current.setLookAt(0, 30, 40, 0, 0, 0, true);
     }
   }, [selectedStationId]);
@@ -249,13 +270,11 @@ function Scene({ results, selectedStationId, onSelectStation }: { results: TestR
       <directionalLight position={[20, 40, 20]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
       <pointLight position={[-20, 20, -20]} intensity={0.5} color="#ffeaa7" />
       
-      {/* Ground - Low Poly */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} receiveShadow onClick={() => onSelectStation('')}>
         <planeGeometry args={[200, 200, 10, 10]} />
         <meshToonMaterial color="#55efc4" />
       </mesh>
 
-      {/* Running Track - Chunky */}
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, -0.8, 0]} receiveShadow castShadow>
         <torusGeometry args={[10, 2.5, 8, 30]} />
         <meshToonMaterial color="#fab1a0" />
@@ -276,15 +295,11 @@ function Scene({ results, selectedStationId, onSelectStation }: { results: TestR
   );
 }
 
-// -------------------------------------------------------------
-// Main App Layout
-// -------------------------------------------------------------
 export default function App() {
   const [results, setResults] = useState<TestResults | null>(null);
   const [selectedStationId, setSelectedStationId] = useState<string | null>(null);
   const [showWelcomeModal, setShowWelcomeModal] = useState(true);
 
-  // Poll for test results
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -294,7 +309,6 @@ export default function App() {
           setResults(data);
         }
       } catch (err) {
-        // Silent fail if not ready
       }
     };
 
@@ -307,7 +321,6 @@ export default function App() {
     <>
       {showWelcomeModal && <TitleScreenModal onClose={() => setShowWelcomeModal(false)} />}
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        {/* Top Half: UI */}
         <div style={{ height: '40%', flexShrink: 0, zIndex: 10, boxShadow: '0 4px 6px rgba(0,0,0,0.3)' }}>
           <AthleticTracker 
             results={results} 
@@ -316,7 +329,6 @@ export default function App() {
           />
         </div>
 
-        {/* Bottom Half: 3D Scene */}
         <div style={{ flex: 1, backgroundColor: '#81ecec' }}>
           <Canvas shadows camera={{ position: [0, 20, 25], fov: 45 }}>
             <Suspense fallback={null}>
