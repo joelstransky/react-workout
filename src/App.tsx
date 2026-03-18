@@ -133,7 +133,7 @@ function AthleticTracker({ results, onSelectStation, selectedStationId }: { resu
 
   return (
     <div style={{ height: '100%', overflowY: 'auto', padding: '20px', boxSizing: 'border-box', backgroundColor: '#2d3436' }}>
-      <h1 style={{ margin: '0 0 20px 0', textAlign: 'center', color: '#fff' }}>🏃‍♂️ Athletic Tracker</h1>
+      <h1 style={{ margin: '0 0 20px 0', textAlign: 'center', color: '#fff' }}>🏃‍♂️ React Workout Tracker</h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
         {STATIONS.map((station) => {
           const res = results?.[station.id] || { passed: 0, failed: 0, total: 0 };
