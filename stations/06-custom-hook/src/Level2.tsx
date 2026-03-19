@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 // 🧠 WORKOUT START: Extract the logic into a custom hook
-function useLocalStorageString(key: string, initialValue: string) {
+function useLocalStorage(key: string, initialValue: string) {
   const [value, setValue] = useState(() => {
-    return localStorage.getItem(key) || initialValue;
+    const savedValue = localStorage.getItem(key);
+    return savedValue !== null ? savedValue : initialValue;
   });
 
   useEffect(() => {
@@ -14,7 +15,7 @@ function useLocalStorageString(key: string, initialValue: string) {
 }
 
 export default function Level2() {
-  const [name, setName] = useLocalStorageString('workout_hook_name', 'Athlete');
+  const [name, setName] = useLocalStorage('workout_hook_name', 'Athlete');
 
   return (
     <div>
@@ -23,6 +24,7 @@ export default function Level2() {
         type="text" 
         value={name} 
         onChange={(e) => setName(e.target.value)} 
+        placeholder="Enter athlete name"
       />
       <p>Keep pushing, {name}!</p>
     </div>

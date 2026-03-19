@@ -1,27 +1,41 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-const ThemeContext = createContext('dark');
+// 🧠 WORKOUT START
+type Theme = 'light' | 'dark';
+type ThemeContextType = {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+};
 
-function ThemedText() {
-  // 🧠 WORKOUT START: Consume the Theme Context
-  const theme = useContext(ThemeContext);
-  
-  const style = {
-    background: theme === 'dark' ? '#333' : '#fff',
-    color: theme === 'dark' ? '#fff' : '#000',
-    padding: '10px'
-  };
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-  return <p style={style}>I am styled based on the "{theme}" theme!</p>;
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('light');
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+}
+
+function ThemeDisplay() {
+  const { theme } = useTheme();
+  return <p data-testid="theme-value">Theme: {theme}</p>;
 }
 
 export default function Level2() {
   return (
-    <ThemeContext.Provider value="dark">
-      <div>
-        <h2>Level 2: Consuming Context</h2>
-        <ThemedText />
-      </div>
-    </ThemeContext.Provider>
+    <ThemeProvider>
+      <h2>Level 2: Theme Provider & Custom Hook</h2>
+      <ThemeDisplay />
+    </ThemeProvider>
   );
 }

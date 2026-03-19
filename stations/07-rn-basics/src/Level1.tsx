@@ -1,29 +1,31 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
+// 🧠 WORKOUT START
+const Level1 = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Station 07: React Native Basics</Text>
-      <Text style={styles.subtitle}>Welcome to the mobile workout.</Text>
+      <Text style={styles.title}>Station 07</Text>
+      <Text style={styles.subtitle}>React Native Basics</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#666',
-  }
+  },
 });
+
+export default Level1;

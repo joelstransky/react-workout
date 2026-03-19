@@ -3,17 +3,10 @@
 ## 🎯 The Goal
 Fetch a list of posts from an API and display them.
 
-## 📋 Instructions
-1. Fetch posts from `https://jsonplaceholder.typicode.com/posts?_limit=5`.
-2. Display a "Loading..." message while the data is being fetched.
-3. Once loaded, render a list of post titles.
-4. If the fetch fails, display "Error loading posts."
-5. Include a "Refetch" button that triggers the fetch again.
-
-## 🚫 Constraints
-- Use the native `fetch` API.
-- Use `useEffect` correctly to handle the initial fetch.
-- Ensure there are no memory leaks (handle the component unmounting).
+## 📋 Levels
+- **Level 1:** Fetch posts from JSONPlaceholder on mount and display titles.
+- **Level 2:** Implement "Loading..." and "Error loading posts" UI states.
+- **Level 3:** Add a "Refetch" button to manually reload data.
 
 ## ⏱️ Estimated Time
 10-15 Minutes

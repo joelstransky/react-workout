@@ -1,47 +1,56 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+// 🧠 WORKOUT START
+type Theme = 'light' | 'dark';
 type ThemeContextType = {
-  theme: string;
+  theme: Theme;
   toggleTheme: () => void;
 };
 
-const ThemeContext = createContext<ThemeContextType>({ theme: 'light', toggleTheme: () => {} });
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-function ThemeToggle() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('light');
+  const toggleTheme = () => setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  
   return (
-    <button onClick={toggleTheme}>
-      Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
-    </button>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
   );
 }
 
-function ThemedBox() {
-  const { theme } = useContext(ThemeContext);
+function useTheme() {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+}
+
+function DeeplyNestedChild() {
+  const { theme, toggleTheme } = useTheme();
   return (
-    <div style={{
-      background: theme === 'dark' ? '#222' : '#eee',
-      color: theme === 'dark' ? '#eee' : '#222',
-      padding: '20px',
-      marginTop: '10px'
-    }}>
-      Current Theme: {theme}
+    <div 
+      data-testid="theme-container"
+      style={{
+        backgroundColor: theme === 'light' ? '#fff' : '#333',
+        color: theme === 'light' ? '#000' : '#fff',
+        padding: '20px',
+        border: '1px solid #ccc'
+      }}
+    >
+      <p>Current Theme: {theme}</p>
+      <button onClick={toggleTheme}>Toggle Theme</button>
     </div>
   );
 }
 
 export default function Level3() {
-  const [theme, setTheme] = useState('light');
-  
-  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div>
-        <h2>Level 3: Dynamic Context</h2>
-        <ThemeToggle />
-        <ThemedBox />
-      </div>
-    </ThemeContext.Provider>
+    <ThemeProvider>
+      <h2>Level 3: Context Actions & Styling</h2>
+      <DeeplyNestedChild />
+    </ThemeProvider>
   );
 }

@@ -1,15 +1,20 @@
-import React, { createContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
-// 🧠 WORKOUT START: Create a Theme Context
-export const ThemeContext = createContext('light');
+// 🧠 WORKOUT START
+const ThemeContext = createContext('light');
+
+function DisplayTheme() {
+  const theme = useContext(ThemeContext);
+  return <p data-testid="theme-value">Current Theme: {theme}</p>;
+}
 
 export default function Level1() {
   return (
-    <ThemeContext.Provider value="light">
-      <div>
-        <h2>Level 1: Provider Setup</h2>
-        <p>The context is set up, but we aren't consuming it yet.</p>
-      </div>
-    </ThemeContext.Provider>
+    <div>
+      <h2>Level 1: Static Context</h2>
+      <ThemeContext.Provider value="light">
+        <DisplayTheme />
+      </ThemeContext.Provider>
+    </div>
   );
 }

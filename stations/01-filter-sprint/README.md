@@ -3,16 +3,10 @@
 ## 🎯 The Goal
 Build a searchable user list.
 
-## 📋 Instructions
-1. Render a list of users provided in the `USERS` constant.
-2. Add an `<input>` field to filter the list by name.
-3. The filtering should be **case-insensitive**.
-4. If no users match the filter, display "No users found."
-
-## 🚫 Constraints
-- **NO `useEffect`:** Use derived state (memoize logic during render).
-- **Controlled Input:** Use `useState` for the search term.
-- **Performance:** Ensure you aren't calculating the filtered list more than necessary.
+## 📋 Levels
+- **Level 1:** Render a static list of `USERS` in `<li>` tags.
+- **Level 2:** Add a controlled search input to filter the list (case-insensitive).
+- **Level 3:** Add a "No users found" message and a "Clear Search" button.
 
 ## ⏱️ Estimated Time
 10-15 Minutes

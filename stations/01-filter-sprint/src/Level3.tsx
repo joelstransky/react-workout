@@ -1,28 +1,33 @@
 import React, { useState } from 'react';
 
-export const USERS = ["Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Heidi"];
+const USERS = ['Alice', 'Bob', 'Charlie'];
 
 export default function Level3() {
-  // 🧠 WORKOUT START: Handle case-insensitive filtering and "no matches" state
-  const [searchState, setSearchState] = useState<string>('');
-  
-  const results = USERS.filter((c:string) => {
-    return c.toLowerCase().includes(searchState.toLowerCase());
-  });
+  const [search, setSearch] = useState('');
+
+  // 🧠 WORKOUT START
+  const filteredUsers = USERS.filter((user) =>
+    user.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="station">
-      <h2>Level 3: The Filter Sprint (Full)</h2>
-      <form>
-        <label>Search <input value={searchState} onChange={(e) => setSearchState(e.target.value)} type="text" placeholder="search here"/></label>
-      </form>
-      {/* 🏃‍♂️ WORKOUT START: Build your search input and filtered list */}
-      <div>
-        {results.length === 0 && "There are no matches"}
-        {results.length > 0 && <ul>
-          {results.map((r) => (<li key={r}>{r}</li>))}
-        </ul>}
-      </div>
+    <div>
+      <input
+        placeholder="Search users..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <button onClick={() => setSearch('')}>Clear Search</button>
+      
+      {filteredUsers.length === 0 ? (
+        <p>No users found</p>
+      ) : (
+        <ul>
+          {filteredUsers.map((user) => (
+            <li key={user}>{user}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

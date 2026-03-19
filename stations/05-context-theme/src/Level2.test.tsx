@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import Level2 from './Level2';
 
 describe('Station: 05-context-theme - Level 2', () => {
-  it('is a pending workout (fail by default)', () => {
-    expect(false, 'You need to implement the actual tests and code for this level!').toBe(true);
+  it('provides theme via ThemeProvider and useTheme hook', () => {
+    render(<Level2 />);
+    const themeDisplay = screen.getByTestId('theme-value');
+    expect(themeDisplay.textContent).toBe('Theme: light');
   });
 });
